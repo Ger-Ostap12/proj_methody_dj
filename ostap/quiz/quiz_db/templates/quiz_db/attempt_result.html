@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Результат{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h1 class="h5 mb-3">Результат: {{ attempt.quiz.title }}</h1>
+        <p class="mb-1">
+            Набрано баллов: <strong>{{ attempt.score }}</strong>
+            из <strong>{{ attempt.max_score }}</strong>
+        </p>
+        {% if attempt.max_score %}
+        <p class="text-muted small mb-4">
+            Процент: {% widthratio attempt.score attempt.max_score 100 %}%
+        </p>
+        {% endif %}
+        {% if attempt.submitted_at %}
+        <p class="text-muted small mb-0">Отправлено: {{ attempt.submitted_at }}</p>
+        {% endif %}
+        <a class="btn btn-primary mt-3" href="{% url 'home' %}">К списку тестов</a>
+    </div>
+</div>
+{% endblock %}

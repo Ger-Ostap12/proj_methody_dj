@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h1 class="h4 mb-2">Добро пожаловать</h1>
+        <p class="text-muted mb-0">Ниже — опубликованные тесты. Чтобы начать, войдите в аккаунт.</p>
+    </div>
+</div>
+
+{% if not quizzes %}
+<div class="alert alert-info">Пока нет опубликованных тестов.</div>
+{% else %}
+<div class="list-group">
+    {% for quiz in quizzes %}
+    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
+       href="{% url 'quiz_detail' quiz.pk %}">
+        <div class="me-2">
+            <div class="fw-semibold">{{ quiz.title }}</div>
+            {% if quiz.description %}
+            <div class="small text-muted">{{ quiz.description|truncatewords:24 }}</div>
+            {% endif %}
+        </div>
+        <span class="badge text-bg-secondary">{{ quiz.question_count }} вопр.</span>
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
