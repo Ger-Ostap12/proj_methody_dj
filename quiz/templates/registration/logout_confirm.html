@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Выход{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h2 class="h4">Выйти из аккаунта?</h2>
+        <p class="text-muted mb-3">Выход выполняется только после нажатия кнопки (защита от случайного перехода по ссылке).</p>
+        <form method="post" action="{% url 'logout' %}" class="d-flex flex-wrap gap-2">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Выйти</button>
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary">Отмена</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

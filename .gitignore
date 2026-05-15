@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Django
+*.sqlite3
+db.sqlite3
+sent_emails/
+
+# IDE / OS
+.idea/
+.DS_Store
+*.iml
+
+# Local env
+.env
+.env.*
