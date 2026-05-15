@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Результаты теста{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <i class="fas fa-chart-line fa-3x text-info mb-3"></i>
+    <h1 class="h3">Ваш результат</h1>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <!-- Основной результат -->
+        <div class="card bg-dark bg-opacity-25 border-info mb-4">
+            <div class="card-body text-center py-4">
+                <div class="display-1 fw-bold text-info mb-2">{{ score_percent }}%</div>
+                <p class="lead">Правильных ответов: {{ correct_answers }}/{{ total_questions }}</p>
+                
+                <!-- Оценка текстом -->
+                {% if score_percent >= 80 %}
+                    <div class="alert alert-success">Отлично! Вы настоящий эксперт! 🎉</div>
+                {% elif score_percent >= 60 %}
+                    <div class="alert alert-info">Хороший результат! Но есть куда расти 💪</div>
+                {% elif score_percent >= 40 %}
+                    <div class="alert alert-warning">Неплохо, но стоит повторить материал 📚</div>
+                {% else %}
+                    <div class="alert alert-danger">Нужно больше практики! Попробуйте ещё раз 😊</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Разбор ошибок (опционально) -->
+        {% if mistakes %}
+        <div class="mt-4">
+            <h5 class="mb-3">📝 Разбор ошибок</h5>
+            {% for mistake in mistakes %}
+            <div class="card bg-dark bg-opacity-25 border-danger mb-2">
+                <div class="card-body">
+                    <p class="mb-1"><strong>Вопрос:</strong> {{ mistake.question }}</p>
+                    <p class="mb-1 text-danger"><strong>Ваш ответ:</strong> {{ mistake.user_answer }}</p>
+                    <p class="mb-0 text-success"><strong>Правильный ответ:</strong> {{ mistake.correct_answer }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Кнопки действий -->
+        <div class="d-flex gap-3 mt-4">
+            <a href="{% url 'home' %}" class="btn btn-outline-info flex-grow-1">
+                <i class="fas fa-home"></i> На главную
+            </a>
+            <a href="{% url 'quiz_detail' quiz_id=quiz_id %}" class="btn btn-info flex-grow-1">
+                <i class="fas fa-redo"></i> Пройти ещё раз
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

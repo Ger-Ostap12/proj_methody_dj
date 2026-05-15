@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Все тесты{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3">📚 Все тесты</h1>
+
+    <!-- Поиск -->
+    <div class="w-50">
+        <form method="get" action="{% url 'quiz_list' %}">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control bg-dark bg-opacity-50 text-light"
+                       placeholder="Поиск тестов..." value="{{ search_query }}">
+                <button type="submit" class="btn btn-info">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Фильтры по сложности -->
+<div class="d-flex gap-2 mb-4 flex-wrap">
+    <a href="{% url 'quiz_list' %}" class="btn btn-sm {% if not difficulty %}btn-info{% else %}btn-outline-info{% endif %}">
+        Все
+    </a>
+    <a href="?difficulty=beginner" class="btn btn-sm {% if difficulty == 'beginner' %}btn-info{% else %}btn-outline-info{% endif %}">
+        Начальный
+    </a>
+    <a href="?difficulty=intermediate" class="btn btn-sm {% if difficulty == 'intermediate' %}btn-info{% else %}btn-outline-info{% endif %}">
+        Средний
+    </a>
+    <a href="?difficulty=advanced" class="btn btn-sm {% if difficulty == 'advanced' %}btn-info{% else %}btn-outline-info{% endif %}">
+        Сложный
+    </a>
+</div>
+
+<!-- Список тестов -->
+<div class="row g-4">
+    {% for test in tests %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 bg-dark bg-opacity-25">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h5 class="card-title text-info">{{ test.name }}</h5>
+                    <!-- Кнопка избранного -->
+                    <form method="post" action="{% url 'toggle_favorite' test.id %}">
+                        {% csrf_token %}
+                        {% if test.is_favorite %}
+                        <button type="submit" class="btn btn-link text-danger p-0">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        {% else %}
+                        <button type="submit" class="btn btn-link text-secondary p-0">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        {% endif %}
+                    </form>
+                </div>
+                <p class="card-text small">{{ test.description|truncatechars:100 }}</p>
+                <div class="mt-3">
+                    <span class="badge bg-info">{{ test.questions_count }} вопросов</span>
+                    <span class="badge bg-secondary">{{ test.get_difficulty_display }}</span>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-top-0 pb-3">
+                <a href="{% url 'quiz_detail' quiz_id=test.id %}" class="btn btn-info btn-sm w-100">
+                    Начать тест →
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="text-center py-5">
+            <i class="fas fa-search fa-3x mb-3 opacity-50"></i>
+            <p>Тесты не найдены</p>
+            <a href="{% url 'home' %}" class="btn btn-info btn-sm">На главную</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
