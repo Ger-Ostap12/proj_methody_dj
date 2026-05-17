@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="quiz-start">
+    <h1 class="h3 mb-3">{{ quiz.title }}</h1>
+
+    {% if quiz.description %}
+    <p class="text-secondary mb-4">{{ quiz.description }}</p>
+    {% endif %}
+
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <span class="badge bg-info text-dark">{{ quiz.questions.count }} вопросов</span>
+        <span class="badge bg-secondary">{{ quiz.time_limit_minutes }} мин.</span>
+        <span class="badge bg-secondary">Попыток: {{ quiz.max_attempts }}</span>
+    </div>
+
+    {% if user.is_authenticated %}
+    <p class="small mb-4">
+        Использовано попыток: {{ attempts_used }} из {{ quiz.max_attempts }}
+    </p>
+    {% endif %}
+
+    <div class="d-flex flex-wrap gap-2">
+        <a href="{% url 'home' %}" class="btn btn-outline-info">← К списку тестов</a>
+
+        {% if not user.is_authenticated %}
+        <a href="{% url 'login' %}?next={% url 'quiz_detail' quiz_id=quiz.pk %}" class="btn btn-info">
+            Войти, чтобы начать
+        </a>
+        {% elif quiz.questions.count == 0 %}
+        <span class="btn btn-secondary disabled">В тесте пока нет вопросов</span>
+        {% elif can_start %}
+        <a href="{% url 'quiz_detail' quiz_id=quiz.pk %}?q=1" class="btn btn-info">
+            Начать тест →
+        </a>
+        {% else %}
+        <span class="btn btn-secondary disabled">Лимит попыток исчерпан</span>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

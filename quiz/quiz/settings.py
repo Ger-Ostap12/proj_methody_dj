@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -121,9 +122,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 # Настройки авторизации
-LOGIN_URL = '/auth/login/'           
-LOGIN_REDIRECT_URL = '/'        
-LOGOUT_REDIRECT_URL = '/' 
+LOGIN_URL = '/auth/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Кастомная модель пользователя
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -132,3 +133,42 @@ AUTH_USER_MODEL = 'users.CustomUser'
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 DEFAULT_CHARSET = 'utf-8'
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
+
+# Автоматически создаём папку logs, чтобы не было ошибки "No such file or directory"
+os.makedirs(os.path.join(BASE_DIR, 'logs'), exist_ok=True)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} - {name} - {levelname} - {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} - {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'django.log'),
+            'maxBytes': 1024 * 1024 * 5,   # 5 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+            'encoding': 'utf8',
+        },
+    },
+    'loggers': {
+        'predictions': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
